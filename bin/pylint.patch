@@ -1,0 +1,4 @@
+249c249
+<             return open(self.file, 'r')
+---
+>             return file(self.file)
