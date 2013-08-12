@@ -1,0 +1,5 @@
+#tableActivity td,
+#tableActivities td {
+    border: 1px solid #ffca7f;
+    border-collapse: collapse;
+}
