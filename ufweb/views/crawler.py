@@ -31,9 +31,9 @@ class Crawler(object):
             for line in f.readlines():
                 self.symbols.append(line.strip())
 
-    def __startCrawler(self):
+    def __startCrawler(self, startDate):
         ''' start googleCrawler '''
-        googleCrawler = GoogleCrawler(self.symbols, "19900101")
+        googleCrawler = GoogleCrawler(self.symbols, startDate)
         googleCrawler.getAndSaveSymbols()
         Crawler.succeeded = googleCrawler.succeeded
         Crawler.failed = googleCrawler.failed
@@ -51,7 +51,13 @@ class Crawler(object):
         if Crawler.thread and Crawler.thread.is_alive():
             return {"status": "Crawler is running from %s" % Crawler.startTime}
         else:
-            Crawler.thread = Thread(target = self.__startCrawler)
+            startDate = 20130701
+            print self.request.POST["start"]
+            if self.request.POST is dict and "start" in self.request.POST and int(self.request.POST["start"]) > 0:
+                print self.request.POST["start"]
+                startDate = int(self.request.body["start"])
+
+            Crawler.thread = Thread(target = self.__startCrawler, args=[startDate])
             Crawler.startTime = time.asctime()
             Crawler.endTime = None
 

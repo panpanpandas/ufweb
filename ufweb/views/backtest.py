@@ -27,7 +27,7 @@ class BackTest(object):
 
     def __startBackTester(self):
         ''' start googleCrawler '''
-        backTester = BackTester(startTickDate = 20000101, startTradeDate = 20020601)
+        backTester = BackTester(startTickDate = 20110501, startTradeDate = 20130601)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics()
@@ -62,5 +62,5 @@ class BackTest(object):
         else:
             return {"status": "BackTest run from %s to %s" % (BackTest.startTime, BackTest.endTime),
                     "metrics": BackTest.metrics,
-                    "latestOrders": BackTest.latestOrders}
+                    "latestOrders": [(date, str(order)) for (date, order) in BackTest.latestOrders]}
 
