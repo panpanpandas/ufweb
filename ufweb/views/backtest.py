@@ -27,7 +27,7 @@ class BackTest(object):
 
     def __startBackTester(self):
         ''' start googleCrawler '''
-        backTester = BackTester(startTickDate = 20110501, startTradeDate = 20130601)
+        backTester = BackTester(startTickDate = 19900501, startTradeDate = 19900501)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics()

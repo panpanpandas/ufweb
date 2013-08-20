@@ -24,7 +24,7 @@ class Crawler(object):
         self.params = request.params
         self.session = request.session
         self.settings = request.registry.settings
-        self.symbolFile = "../conf/SPY500.list"
+        self.symbolFile = "../conf/SPY_NASDAQ.list"
         self.symbols = []
 
         with open(self.symbolFile, 'r') as f:
@@ -52,10 +52,8 @@ class Crawler(object):
             return {"status": "Crawler is running from %s" % Crawler.startTime}
         else:
             startDate = 20130701
-            print self.request.POST["start"]
-            if self.request.POST is dict and "start" in self.request.POST and int(self.request.POST["start"]) > 0:
-                print self.request.POST["start"]
-                startDate = int(self.request.body["start"])
+            if "start" in self.request.POST and int(self.request.POST["start"]) > 0:
+                startDate = int(self.request.POST["start"])
 
             Crawler.thread = Thread(target = self.__startCrawler, args=[startDate])
             Crawler.startTime = time.asctime()
@@ -63,7 +61,7 @@ class Crawler(object):
 
             Crawler.thread.daemon = False
             Crawler.thread.start()
-            return {"status": "Crawler started."}
+            return {"status": "Crawler started from date %s." % startDate}
 
     @view_config(route_name='crawler', request_method="GET", renderer='json')
     def GetCrawler(self):

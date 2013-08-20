@@ -1,0 +1,7 @@
+FrontendService.egg-info
+.project
+.pydevproject
+*.pyc
+logs
+target
+__pycache__
