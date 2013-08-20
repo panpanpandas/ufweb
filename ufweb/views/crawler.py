@@ -6,6 +6,7 @@ Created on Aug 13, 2013
 from pyramid.view import view_config
 from ultrafinance.module.googleCrawler import GoogleCrawler
 import time
+from os import path
 
 from threading import Thread
 import logging
@@ -24,16 +25,16 @@ class Crawler(object):
         self.params = request.params
         self.session = request.session
         self.settings = request.registry.settings
-        self.symbolFile = "../conf/SPY_NASDAQ.list"
+        self.symbolFile = path.join(path.join(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))), 'conf'), "SPY_NASDAQ.list")
         self.symbols = []
 
         with open(self.symbolFile, 'r') as f:
             for line in f.readlines():
                 self.symbols.append(line.strip())
 
-    def __startCrawler(self, startDate):
+    def __startCrawler(self, startDate, poolsize):
         ''' start googleCrawler '''
-        googleCrawler = GoogleCrawler(self.symbols, startDate)
+        googleCrawler = GoogleCrawler(self.symbols, startDate, poolsize)
         googleCrawler.getAndSaveSymbols()
         Crawler.succeeded = googleCrawler.succeeded
         Crawler.failed = googleCrawler.failed
@@ -52,10 +53,14 @@ class Crawler(object):
             return {"status": "Crawler is running from %s" % Crawler.startTime}
         else:
             startDate = 20130701
+            poolsize = 5
             if "start" in self.request.POST and int(self.request.POST["start"]) > 0:
                 startDate = int(self.request.POST["start"])
 
-            Crawler.thread = Thread(target = self.__startCrawler, args=[startDate])
+            if "poolsize" in self.request.POST and int(self.request.POST["poolsize"]) > 0:
+                poolsize = int(self.request.POST["poolsize"])
+
+            Crawler.thread = Thread(target = self.__startCrawler, args=[startDate, poolsize])
             Crawler.startTime = time.asctime()
             Crawler.endTime = None
 

@@ -25,9 +25,9 @@ class BackTest(object):
         self.session = request.session
         self.settings = request.registry.settings
 
-    def __startBackTester(self):
+    def __startBackTester(self, startTickDate, startTradeDate):
         ''' start googleCrawler '''
-        backTester = BackTester(startTickDate = 19900501, startTradeDate = 19900501)
+        backTester = BackTester(startTickDate, startTradeDate)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics()
@@ -44,7 +44,16 @@ class BackTest(object):
         if BackTest.thread and BackTest.thread.is_alive():
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
-            BackTest.thread = Thread(target = self.__startBackTester)
+            startTickDate = 20110606
+            startTradeDate = 20130607
+
+            if "startTickDate" in self.request.POST and int(self.request.POST["startTickDate"]) > 0:
+                startTickDate = int(self.request.POST["startTickDate"])
+
+            if "startTradeDate" in self.request.POST and int(self.request.POST["startTradeDate"]) > 0:
+                startTradeDate = int(self.request.POST["startTradeDate"])
+
+            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate])
             BackTest.startTime = time.asctime()
             BackTest.endTime = None
 
