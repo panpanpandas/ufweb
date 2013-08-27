@@ -25,7 +25,7 @@ class Crawler(object):
         self.params = request.params
         self.session = request.session
         self.settings = request.registry.settings
-        self.symbolFile = path.join(path.join(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))), 'conf'), "SPY_NASDAQ.list")
+        self.symbolFile = self.settings["crawler.file"]
         self.symbols = []
 
         with open(self.symbolFile, 'r') as f:
