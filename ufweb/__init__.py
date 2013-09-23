@@ -20,6 +20,7 @@ def main(global_config, **settings):
     config.add_route("activities", "/activities")
     config.add_route("crawler", "/crawler")
     config.add_route("backtest", "/backtest")
+    config.add_route("backtest.json", "/backtest.json")
     config.add_route("/", "/")
 
     # scan packages for views

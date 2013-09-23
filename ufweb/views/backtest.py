@@ -18,6 +18,7 @@ class BackTest(object):
     endTime = None
     latestOrders = None
     metrics = None
+    hodlings = None
 
     def __init__(self, request):
         self.request = request
@@ -30,8 +31,9 @@ class BackTest(object):
         backTester = BackTester(self.settings["ultrafinance.config"], startTickDate, startTradeDate)
         backTester.setup()
         backTester.runTests()
-        BackTest.metrics = backTester.getMetrics()
+        BackTest.metrics = backTester.getMetrics().values()[0]
         BackTest.latestOrders = backTester.getLatestOrders()
+        BackTest.hodlings = backTester.getHoldings()
 
         BackTest.endTime = time.asctime()
 
@@ -61,15 +63,51 @@ class BackTest(object):
             BackTest.thread.start()
             return {"status": "BackTest started."}
 
-    @view_config(route_name='backtest', request_method="GET", renderer='json')
-    def GetBackTest(self):
+    @view_config(route_name='backtest', request_method="GET",
+                 renderer='ufweb:templates/backtest/getBackTestResult.mako')
+    def GetBackTestResult(self):
         ''' get backtest status'''
-        if BackTest.thread is None:
-            return {"status": "BackTest haven't run yet."}
-        elif BackTest.thread and BackTest.thread.is_alive():
-            return {"status": "BackTest is running from %s." % BackTest.startTime}
-        else:
-            return {"status": "BackTest run from %s to %s" % (BackTest.startTime, BackTest.endTime),
-                    "metrics": BackTest.metrics,
-                    "latestOrders": [(date, str(order)) for (date, order) in BackTest.latestOrders]}
+        return self.__getBackTestJson()
 
+    @view_config(route_name='backtest.json', request_method="GET", renderer='json')
+    def GetBackTestJsonResult(self):
+        ''' get backtest status'''
+        return self.__getBackTestJson()
+
+    def __getBackTestJson(self):
+        ''' get backtest json result '''
+        ret = {}
+
+        if BackTest.thread is None:
+            return ret
+        elif BackTest.thread and BackTest.thread.is_alive():
+            return {"startDate": BackTest.startTime}
+        else:
+            return {"startDate": BackTest.startTime,
+                    "endDate": BackTest.endTime,
+                    "metrics": BackTest.metrics,
+                    "latestOrders": [self.__convertOrderToDict(date, order) for (date, order) in BackTest.latestOrders],
+                    "holdings": self.__convertHoldingsToList(BackTest.hodlings[0]) if len(BackTest.hodlings) > 0 else {}}
+
+    def __convertHoldingsToList(self, holding):
+        ''' convert holding to dict'''
+        ret = []
+        for symbol, (share, price) in holding.items():
+            if share <= 0:
+                continue
+
+            ret.append({"symbol": symbol,
+                        "share": int(share),
+                        "price": "%.2f" % price})
+
+        return ret
+
+    def __convertOrderToDict(self, date, order):
+        ''' convert order to dict '''
+        return {"status": order.status,
+                "action": order.action,
+                "share": int(order.share),
+                "symbol": order.symbol,
+                "type": order.type,
+                "price": "%.2f" % order.price,
+                "date": date}
