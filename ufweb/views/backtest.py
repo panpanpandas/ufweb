@@ -28,7 +28,7 @@ class BackTest(object):
 
     def __startBackTester(self, startTickDate, startTradeDate):
         ''' start googleCrawler '''
-        backTester = BackTester(self.settings["ultrafinance.config"], startTickDate, startTradeDate)
+        backTester = BackTester(self.settings["ultrafinance.config"], startTickDate, startTradeDate, 150000)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics().values()[0]
