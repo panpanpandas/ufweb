@@ -37,22 +37,61 @@
     	<thead>
 	        <tr>
 	            <td>Date</td>
-	            <td>Symbol</td>
-	            <td>Action</td>
-	            <td>Share</td>
-	            <td>Price</td>
-	            <td>Type</td>
+	            <td>Account Value</td>
+	            <td><table>
+	            	<tr>Latest Orders</tr>
+	            	<tr>
+			            <td>Symbol</td>
+			            <td>Action</td>
+			            <td>Share</td>
+			            <td>Price</td>
+			            <td>Type</td>
+			            <td>Status</td>
+	            	</tr>
+	            </table></td>
+	            <td><table>
+	            	<tr>Excuted Orders</tr>
+	            	<tr>
+			            <td>Symbol</td>
+			            <td>Action</td>
+			            <td>Share</td>
+			            <td>Price</td>
+			            <td>Type</td>
+			            <td>Status</td>
+	            	</tr>
+	            </table></td>
 	        </tr>
         </thead>
         <tbody>
-        	% for order in latestOrders:
-		        <tr>
-		            <td>${order['date']}</td>
-		            <td>${order['symbol']}</td>
-		            <td>${order['action']}</td>
-		            <td>${order['share']}</td>
-		            <td>${order['price']}</td>
-		            <td>${order['type']}</td>
+        	% for state in latestStates:
+	            <tr>
+	            <td>${state['time']}</td>
+	            <td>${state['account']}</td>
+	            <td><table>
+		        % for order in state['placedOrders']:
+					<tr>
+			            <td>${order['symbol']}</td>
+			            <td>${order['action']}</td>
+			            <td>${order['share']}</td>
+			            <td>${order['price']}</td>
+			            <td>${order['type']}</td>
+			            <td>${order['status']}</td>
+		            </tr>
+		        % endfor
+		        </table></td>
+
+		        <td><table>
+		        % for order in state['updatedOrders']:
+					<tr>
+			            <td>${order['symbol']}</td>
+			            <td>${order['action']}</td>
+			            <td>${order['share']}</td>
+			            <td>${order['price']}</td>
+			            <td>${order['type']}</td>
+			            <td>${order['status']}</td>
+		            </tr>
+		        % endfor
+		        </table></td>
 		        </tr>
 	        % endfor
         </tbody>

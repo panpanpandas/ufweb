@@ -16,7 +16,7 @@ class BackTest(object):
     thread = None
     startTime = None
     endTime = None
-    latestOrders = None
+    latestStates = None
     metrics = None
     hodlings = None
 
@@ -32,7 +32,7 @@ class BackTest(object):
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics().values()[0]
-        BackTest.latestOrders = backTester.getLatestOrders()
+        BackTest.latestStates = backTester.getLatestStates()
         BackTest.hodlings = backTester.getHoldings()
 
         BackTest.endTime = time.asctime()
@@ -86,7 +86,7 @@ class BackTest(object):
             return {"startDate": BackTest.startTime,
                     "endDate": BackTest.endTime,
                     "metrics": BackTest.metrics,
-                    "latestOrders": [self.__convertOrderToDict(date, order) for (date, order) in BackTest.latestOrders],
+                    "latestStates": BackTest.latestStates,
                     "holdings": self.__convertHoldingsToList(BackTest.hodlings[0]) if len(BackTest.hodlings) > 0 else {}}
 
     def __convertHoldingsToList(self, holding):
