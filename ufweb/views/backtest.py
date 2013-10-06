@@ -47,7 +47,7 @@ class BackTest(object):
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
             startTickDate = 20110825
-            startTradeDate = 20130901
+            startTradeDate = 20130910
 
             if "startTickDate" in self.request.POST and int(self.request.POST["startTickDate"]) > 0:
                 startTickDate = int(self.request.POST["startTickDate"])
