@@ -26,9 +26,10 @@ class BackTest(object):
         self.session = request.session
         self.settings = request.registry.settings
 
-    def __startBackTester(self, startTickDate, startTradeDate):
+    def __startBackTester(self, startTickDate, startTradeDate, endTradeDate):
         ''' start googleCrawler '''
-        backTester = BackTester(self.settings["ultrafinance.config"], startTickDate, startTradeDate, 150000)
+        backTester = BackTester(configFile = self.settings["ultrafinance.config"], startTickDate = startTickDate,
+                                startTradeDate = startTradeDate, endTradeDate = endTradeDate, cash = 150000)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics().values()[0]
@@ -48,6 +49,7 @@ class BackTest(object):
         else:
             startTickDate = 20110825
             startTradeDate = 20130910
+            endTradeDate = None
 
             if "startTickDate" in self.request.POST and int(self.request.POST["startTickDate"]) > 0:
                 startTickDate = int(self.request.POST["startTickDate"])
@@ -55,7 +57,10 @@ class BackTest(object):
             if "startTradeDate" in self.request.POST and int(self.request.POST["startTradeDate"]) > 0:
                 startTradeDate = int(self.request.POST["startTradeDate"])
 
-            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate])
+            if "endTradeDate" in self.request.POST and int(self.request.POST["endTradeDate"]) > 0:
+                endTradeDate = int(self.request.POST["endTradeDate"])
+
+            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate, endTradeDate])
             BackTest.startTime = time.asctime()
             BackTest.endTime = None
 
