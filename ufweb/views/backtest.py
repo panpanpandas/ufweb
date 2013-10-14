@@ -47,8 +47,8 @@ class BackTest(object):
         if BackTest.thread and BackTest.thread.is_alive():
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
-            startTickDate = 20110825
-            startTradeDate = 20130910
+            startTickDate = 20111005
+            startTradeDate = 20131005
             endTradeDate = None
 
             if "startTickDate" in self.request.POST and int(self.request.POST["startTickDate"]) > 0:
