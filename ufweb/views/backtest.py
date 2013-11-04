@@ -71,7 +71,8 @@ class BackTest(object):
             if "symbols" in body:
                 symbols = body["symbols"].split()
 
-            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate, endTradeDate, [symbols]])
+            BackTest.thread = Thread(target = self.__startBackTester,
+                                     args=[startTickDate, startTradeDate, endTradeDate, [symbols] if symbols else None])
             BackTest.startTime = time.asctime()
             BackTest.endTime = None
 
