@@ -26,10 +26,11 @@ class BackTest(object):
         self.session = request.session
         self.settings = request.registry.settings
 
-    def __startBackTester(self, startTickDate, startTradeDate, endTradeDate):
+    def __startBackTester(self, startTickDate, startTradeDate, endTradeDate, symbolLists):
         ''' start googleCrawler '''
         backTester = BackTester(configFile = self.settings["ultrafinance.config"], startTickDate = startTickDate,
-                                startTradeDate = startTradeDate, endTradeDate = endTradeDate, cash = 150000)
+                                startTradeDate = startTradeDate, endTradeDate = endTradeDate, cash = 150000,
+                                symbolLists = symbolLists)
         backTester.setup()
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics().values()[0]
@@ -50,17 +51,27 @@ class BackTest(object):
             startTickDate = 20111005
             startTradeDate = 20131017
             endTradeDate = None
+            symbols = None
 
-            if "startTickDate" in self.request.POST and int(self.request.POST["startTickDate"]) > 0:
-                startTickDate = int(self.request.POST["startTickDate"])
+            body = {}
+            try:
+                body = self.request.json_body
+            except Exception:
+                LOG.debug("Can't decode request body")
 
-            if "startTradeDate" in self.request.POST and int(self.request.POST["startTradeDate"]) > 0:
-                startTradeDate = int(self.request.POST["startTradeDate"])
+            if "startTickDate" in body and int(body["startTickDate"]) > 0:
+                startTickDate = int(body["startTickDate"])
 
-            if "endTradeDate" in self.request.POST and int(self.request.POST["endTradeDate"]) > 0:
-                endTradeDate = int(self.request.POST["endTradeDate"])
+            if "startTradeDate" in body and int(body["startTradeDate"]) > 0:
+                startTradeDate = int(body["startTradeDate"])
 
-            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate, endTradeDate])
+            if "endTradeDate" in body and int(body["endTradeDate"]) > 0:
+                endTradeDate = int(body["endTradeDate"])
+
+            if "symbols" in body:
+                symbols = body["symbols"].split()
+
+            BackTest.thread = Thread(target = self.__startBackTester, args=[startTickDate, startTradeDate, endTradeDate, [symbols]])
             BackTest.startTime = time.asctime()
             BackTest.endTime = None
 
