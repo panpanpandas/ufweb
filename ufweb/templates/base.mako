@@ -1,9 +1,14 @@
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
-    <head>
-        <link rel="stylesheet" type="text/css" href="/static/stylesheets/base.css"/>
-        ${next.head()}
-    </head>
-    <body>
-        ${next.body()}
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="Ultra Finance -- Python library & utility for real time stock data collection, analyzing and backtesting">
+	<meta name="keywords" content="Python, Finance, Bactest, Crawler">
+	<meta name="author" content="ppa">
+	<meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/base.css"/>
+    ${next.head()}
+</head>
+<body>
+    ${next.body()}
+</body>
 </html>

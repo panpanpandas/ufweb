@@ -1,4 +1,11 @@
-table th, td {
-    border: 1px solid #ffca7f;
+table, th, td {
+    border: 1px solid #333;
     border-collapse: collapse;
+}
+
+
+table caption:only-of-type {
+    background-color: #333;
+    color: white;
+    padding: 0.3em;
 }

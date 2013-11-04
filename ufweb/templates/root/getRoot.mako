@@ -1,6 +1,7 @@
 <%inherit file="/base.mako"/>
 
 <%def name="head()">
+<title>Ultra Finance</title>
 </%def>
 
 <h3>Ultra Finance</h3>

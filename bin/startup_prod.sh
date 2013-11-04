@@ -19,6 +19,6 @@ if [[ ! -d $LOG_DIR ]]; then
     mkdir -p $LOG_DIR
 fi
 
-$PSERVE --daemon --reload --pid-file=$LOG_DIR/${SERVICE_NAME}.pid --log-file=$LOG_DIR/frontendservice.log $INI
+$PSERVE --daemon --reload --pid-file=$LOG_DIR/${SERVICE_NAME}.pid --log-file=$LOG_DIR/ufweb.log $INI
 
 exit 0

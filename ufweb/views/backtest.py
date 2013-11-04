@@ -18,7 +18,7 @@ class BackTest(object):
     endTime = None
     latestStates = None
     metrics = None
-    hodlings = None
+    holdings = None
 
     def __init__(self, request):
         self.request = request
@@ -35,7 +35,7 @@ class BackTest(object):
         backTester.runTests()
         BackTest.metrics = backTester.getMetrics().values()[0]
         BackTest.latestStates = backTester.getLatestStates()
-        BackTest.hodlings = backTester.getHoldings()
+        BackTest.holdings = backTester.getHoldings()
 
         BackTest.endTime = time.asctime()
 
@@ -103,7 +103,8 @@ class BackTest(object):
                     "endDate": BackTest.endTime,
                     "metrics": BackTest.metrics,
                     "latestStates": BackTest.latestStates,
-                    "holdings": self.__convertHoldingsToList(BackTest.hodlings[0]) if len(BackTest.hodlings) > 0 else {}}
+                    "holdings": self.__convertHoldingsToList(BackTest.holdings[0]) \
+                    if BackTest.holdings and len(BackTest.holdings) > 0 else {}}
 
     def __convertHoldingsToList(self, holding):
         ''' convert holding to dict'''

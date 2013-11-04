@@ -1,6 +1,7 @@
 <%inherit file="/base.mako"/>
 
 <%def name="head()">
+<title>UF Backtest</title>
 </%def>
 
 <!-- body ----------------------------------------------------------- -->
@@ -11,10 +12,11 @@
 % else:
 	<h2>Backtest completed successfully from ${startDate} to ${endDate} </h2>
 	<br>
-	<h3>Metrics</h3>
 	<table id="tableBactTestMetrics">
+		<caption>Metrics</caption>
 	    <thead>
 	        <tr>
+	        	<td>Period</td>
 	            <td>Lowest Date&Value</td>
 	            <td>Higest Date&Value</td>
 	            <td>End Date&Value</td>
@@ -23,6 +25,7 @@
 	    </thead>
 	    <tbody>
 	        <tr>
+	        	<td>${metrics['startTime']} - ${metrics['endTime']}</td>
 	            <td>${metrics['minTimeValue'][0]} - ${metrics['minTimeValue'][1]}</td>
 	            <td>${metrics['maxTimeValue'][0]} - ${metrics['maxTimeValue'][1]}</td>
 	            <td>${metrics['endTime']} - ${metrics['endValue']}</td>
@@ -32,34 +35,28 @@
 	</table>
 
 	<br>
-	<h3>Latest Orders</h3>
 	<table id="tableBactTestLastestOrders">
+    	<caption>Latest Orders</caption>
     	<thead>
 	        <tr>
-	            <td>Date</td>
-	            <td>Account Value</td>
-	            <td><table>
-	            	<tr>Latest Orders</tr>
-	            	<tr>
-			            <td>Symbol</td>
-			            <td>Action</td>
-			            <td>Share</td>
-			            <td>Price</td>
-			            <td>Type</td>
-			            <td>Status</td>
-	            	</tr>
-	            </table></td>
-	            <td><table>
-	            	<tr>Excuted Orders</tr>
-	            	<tr>
-			            <td>Symbol</td>
-			            <td>Action</td>
-			            <td>Share</td>
-			            <td>Price</td>
-			            <td>Type</td>
-			            <td>Status</td>
-	            	</tr>
-	            </table></td>
+	            <td rowspan="2">Date</td>
+	            <td rowspan="2">Account Value</td>
+	            <td colspan="6">Latest Orders</td>
+	            <td colspan="6">Excuted Orders</td>
+	        </tr>
+    	        <td>Symbol</td>
+	            <td>Action</td>
+	            <td>Share</td>
+	            <td>Price</td>
+	            <td>Type</td>
+	            <td>Status</td>
+	            <td>Symbol</td>
+	            <td>Action</td>
+	            <td>Share</td>
+	            <td>Price</td>
+	            <td>Type</td>
+	            <td>Status</td>
+	        <tr>
 	        </tr>
         </thead>
         <tbody>
@@ -67,7 +64,7 @@
 	            <tr>
 	            <td>${state['time']}</td>
 	            <td>${state['account']}</td>
-	            <td><table>
+	            <td colspan="6"><table>
 		        % for order in state['placedOrders']:
 					<tr>
 			            <td>${order['symbol']}</td>
@@ -80,7 +77,7 @@
 		        % endfor
 		        </table></td>
 
-		        <td><table>
+		        <td colspan="6"><table>
 		        % for order in state['updatedOrders']:
 					<tr>
 			            <td>${order['symbol']}</td>
@@ -98,8 +95,8 @@
 	</table>
 
 	<br>
-	<h3>Holdings</h3>
 	<table id="tableBactTestHodlings">
+		<caption>Holdings</caption>
     	<thead>
 	        <tr>
 	            <td>Symbol</td>
