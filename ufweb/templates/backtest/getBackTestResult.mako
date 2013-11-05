@@ -17,19 +17,21 @@
 	    <thead>
 	        <tr>
 	        	<td>Period</td>
-	            <td>Lowest Date&Value</td>
-	            <td>Higest Date&Value</td>
-	            <td>End Date&Value</td>
+	            <td>Lowest Date - Value</td>
+	            <td>Higest Date - Value</td>
+	            <td>End Date - Value</td>
 	            <td>Sharpe Ratio</td>
+	            <td>Max Drawdown</td>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <tr>
 	        	<td>${metrics['startTime']} - ${metrics['endTime']}</td>
-	            <td>${metrics['minTimeValue'][0]} - ${metrics['minTimeValue'][1]}</td>
-	            <td>${metrics['maxTimeValue'][0]} - ${metrics['maxTimeValue'][1]}</td>
-	            <td>${metrics['endTime']} - ${metrics['endValue']}</td>
-	            <td>${metrics['sharpeRatio']}</td>
+	            <td>${metrics['minTimeValue'][0]} - ${"%.1f" % metrics['minTimeValue'][1]}</td>
+	            <td>${metrics['maxTimeValue'][0]} - ${"%.1f" % metrics['maxTimeValue'][1]}</td>
+	            <td>${metrics['endTime']} - ${"%.1f" % metrics['endValue']}</td>
+	            <td>${"%.2f" % metrics['sharpeRatio']}</td>
+	            <td>${metrics['maxDrawDown'][0]} - ${"%.1f%%" % (metrics['maxDrawDown'][1] * 100)}</td>
 	        </tr>
 	    </tbody>
 	</table>
