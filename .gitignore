@@ -5,3 +5,4 @@ FrontendService.egg-info
 logs
 target
 __pycache__
+.DS_Store

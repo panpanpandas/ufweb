@@ -5,7 +5,8 @@
 	<meta name="keywords" content="Python, Finance, Bactest, Crawler">
 	<meta name="author" content="ppa">
 	<meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/stylesheets/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css"/>
+    <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
     ${next.head()}
 </head>
 <body>
