@@ -8,11 +8,14 @@
 <h3>Ultra Finance</h3>
 <a href="./crawler">Crawler</a>
 </br>
+<button onclick="startCrawler({})">Start Crawler</button>
+</br>
+</br>
 <a href="./backtest">Backtest</a>
-
-<button onclick="startBacktest({})">start backtest</button>
-<button onclick="start2007Backtest()">start backtest(2007-2009)</button>
-<button onclick="start2009Backtest()">start backtest(2009-2013)</button>
+</br>
+<button onclick="startBacktest({})">Start Backtest</button>
+<button onclick="start2007Backtest()">Start Backtest(2007-2009)</button>
+<button onclick="start2009Backtest()">Start Backtest(2009-2013)</button>
 
 <script>
 function start2007Backtest() {
@@ -27,6 +30,12 @@ function start2009Backtest() {
 function startBacktest(data) {
 	$.post("./backtest", function(data) {
 	  window.location.replace("./backtest");
+	});
+}
+
+function startCrawler(data) {
+	$.post("./crawler", function(data) {
+	  window.location.replace("./crawler");
 	});
 }
 </script>
