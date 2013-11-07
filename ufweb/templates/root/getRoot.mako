@@ -1,7 +1,6 @@
 <%inherit file="/base.mako"/>
 
 <%def name="head()">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <title>Ultra Finance</title>
 </%def>
 
@@ -28,14 +27,28 @@ function start2009Backtest() {
 
 
 function startBacktest(data) {
-	$.post("./backtest", function(data) {
-	  window.location.replace("./backtest");
+	$.ajax({
+	    type: "POST",
+	    url: "./backtest",
+	    processData: false,
+	    contentType: 'application/json',
+	    data: JSON.stringify(data),
+	    success: function(r) {
+		    window.location.replace("./backtest");
+	    }
 	});
 }
 
 function startCrawler(data) {
-	$.post("./crawler", function(data) {
-	  window.location.replace("./crawler");
+	$.ajax({
+	    type: "POST",
+	    url: "./crawler",
+	    processData: false,
+	    contentType: 'application/json',
+	    data: JSON.stringify(data),
+	    success: function(r) {
+		    window.location.replace("./crawler");
+	    }
 	});
 }
 </script>

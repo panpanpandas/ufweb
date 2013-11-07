@@ -5,6 +5,7 @@ Created on Aug 13, 2013
 '''
 from pyramid.view import view_config
 from ultrafinance.module.backTester import BackTester
+from ultrafinance.lib.util import string2EpochTime
 import time
 
 from threading import Thread
@@ -71,6 +72,7 @@ class BackTest(object):
             if "symbols" in body:
                 symbols = body["symbols"].split()
 
+            LOG.debug("Get backtest request: startTickDate %d, startTradeDate %d, endTradeDate %d" % (startTickDate, startTradeDate, endTradeDate if endTradeDate else -1))
             BackTest.thread = Thread(target = self.__startBackTester,
                                      args=[startTickDate, startTradeDate, endTradeDate, [symbols] if symbols else None])
             BackTest.startTime = time.asctime()
@@ -104,6 +106,8 @@ class BackTest(object):
                     "endDate": BackTest.endTime,
                     "metrics": BackTest.metrics,
                     "latestStates": BackTest.latestStates,
+                    "timeAndPostionList": [[string2EpochTime(str(state['time'])) * 1000, float(state['account'])]
+                                           for state in BackTest.latestStates] if BackTest.latestStates else [],
                     "holdings": self.__convertHoldingsToList(BackTest.holdings[0]) \
                     if BackTest.holdings and len(BackTest.holdings) > 0 else {}}
 

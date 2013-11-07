@@ -1,8 +1,12 @@
 <%inherit file="/base.mako"/>
 
 <%def name="head()">
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 <title>UF Backtest</title>
 </%def>
+
+
 
 <!-- body ----------------------------------------------------------- -->
 % if startDate is UNDEFINED:
@@ -36,6 +40,27 @@
 	    </tbody>
 	</table>
 
+	<div id="positionDiv" style="height: 200; width: 50%"></div>
+	<script>
+	$('#positionDiv').highcharts('StockChart', {
+		rangeSelector : {
+			selected : 0
+		},
+
+		title : {
+			text : 'Account Position'
+		},
+
+		series : [{
+			name : 'Position',
+			data : ${timeAndPostionList},
+			tooltip: {
+				valueDecimals: 2
+			}
+		}]
+	});
+	</script>
+
 	<br>
 	<table id="tableBactTestLastestOrders">
     	<caption>Latest Orders</caption>
@@ -62,7 +87,7 @@
 	        </tr>
         </thead>
         <tbody>
-        	% for state in latestStates:
+        	% for state in latestStates[-30:]:
 	            <tr>
 	            <td>${state['time']}</td>
 	            <td>${state['account']}</td>
