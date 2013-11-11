@@ -51,13 +51,8 @@
 			text : 'Account Position'
 		},
 
-		series : [{
-			name : 'Position',
-			data : ${timeAndPostionList},
-			tooltip: {
-				valueDecimals: 2
-			}
-		}]
+		series : [{"name": "account", "data": ${timeAndPostionList}}, {"name": "Holdings", "data": ${timeAndHoldingList}}],
+
 	});
 	</script>
 

@@ -52,7 +52,7 @@ class Crawler(object):
         if Crawler.thread and Crawler.thread.is_alive():
             return {"status": "Crawler is running from %s" % Crawler.startTime}
         else:
-            startDate = 20130701
+            startDate = 20131025
             poolsize = 5
             if "start" in self.request.POST and int(self.request.POST["start"]) > 0:
                 startDate = int(self.request.POST["start"])
