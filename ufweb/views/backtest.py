@@ -6,7 +6,11 @@ Created on Aug 13, 2013
 from pyramid.view import view_config
 from ultrafinance.module.backTester import BackTester
 from ultrafinance.lib.util import string2EpochTime
+from ultrafinance.backTest.stateSaver.sqlSaver import listTableNames
 import time
+
+from ultrafinance.ufConfig.pyConfig import PyConfig
+from ultrafinance.backTest.constant import *
 
 from threading import Thread
 import logging
@@ -81,6 +85,17 @@ class BackTest(object):
             BackTest.thread.daemon = False
             BackTest.thread.start()
             return {"status": "BackTest started."}
+
+
+    @view_config(route_name='backtest/tables', request_method="GET",
+                 renderer='json')
+    def GetBackTestTables(self):
+        ''' get backtest status'''
+        self.__config = PyConfig()
+        self.__config.setSource(self.settings["ultrafinance.config"])
+
+        outputDb = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB)
+        return listTableNames(outputDb)
 
     @view_config(route_name='backtest', request_method="GET",
                  renderer='ufweb:templates/backtest/getBackTestResult.mako')

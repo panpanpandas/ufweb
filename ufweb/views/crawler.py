@@ -6,7 +6,6 @@ Created on Aug 13, 2013
 from pyramid.view import view_config
 from ultrafinance.module.googleCrawler import GoogleCrawler
 import time
-from os import path
 
 from threading import Thread
 import logging
