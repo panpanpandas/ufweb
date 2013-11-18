@@ -125,6 +125,8 @@ class BackTest(object):
                                            for state in BackTest.latestStates] if BackTest.latestStates else [],
                     "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue'])]
                                            for state in BackTest.latestStates] if BackTest.latestStates else [],
+                    "timeAndBenchmarkList": [[string2EpochTime(str(state['time'])) * 1000, float(state['indexPrice'])]
+                                             for state in BackTest.latestStates] if BackTest.latestStates else [],
                     "holdings": self.__convertHoldingsToList(BackTest.holdings[0]) \
                     if BackTest.holdings and len(BackTest.holdings) > 0 else {}}
 

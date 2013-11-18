@@ -51,7 +51,9 @@
 			text : 'Account Position'
 		},
 
-		series : [{"name": "account", "data": ${timeAndPostionList}}, {"name": "Holdings", "data": ${timeAndHoldingList}}],
+		series : [{"name": "account", "data": ${timeAndPostionList}},
+				  {"name": "Holdings", "data": ${timeAndHoldingList}},
+				  {"name": "benchMark", "data": ${timeAndBenchmarkList}}],
 
 	});
 	</script>
