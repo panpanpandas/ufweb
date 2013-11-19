@@ -26,6 +26,7 @@
 	            <td>End Date - Value</td>
 	            <td>Sharpe Ratio</td>
 	            <td>Max Drawdown</td>
+	            <td>R Squired</td>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -36,11 +37,12 @@
 	            <td>${metrics['endTime']} - ${"%.1f" % metrics['endValue']}</td>
 	            <td>${"%.2f" % metrics['sharpeRatio']}</td>
 	            <td>${metrics['maxDrawDown'][0]} - ${"%.1f%%" % (metrics['maxDrawDown'][1] * 100)}</td>
+	            <td>${"%.1f" % metrics['rSquired']}</td>
 	        </tr>
 	    </tbody>
 	</table>
 
-	<div id="positionDiv" style="height: 200; width: 50%"></div>
+	<div id="positionDiv" style="height: 500px; width: 50%"></div>
 	<script>
 	$('#positionDiv').highcharts('StockChart', {
 		rangeSelector : {
@@ -51,9 +53,25 @@
 			text : 'Account Position'
 		},
 
-		series : [{"name": "account", "data": ${timeAndPostionList}},
-				  {"name": "Holdings", "data": ${timeAndHoldingList}},
-				  {"name": "benchMark", "data": ${timeAndBenchmarkList}}],
+		yAxis: [{
+            title: {
+                text: 'Account'
+            },
+            height: 200,
+            lineWidth: 2
+        }, {
+            title: {
+                text: 'Holdings'
+            },
+            top: 300,
+            height: 100,
+            offset: 0,
+            lineWidth: 2
+        }],
+
+		series : [{"name": "account", "compare": "percent", "data": ${timeAndPostionList}},
+		          {"name": "benchMark", "compare": "percent", "data": ${timeAndBenchmarkList}},
+				  {"name": "holdings", yAxis: 1, "data": ${timeAndHoldingList}}],
 
 	});
 	</script>
