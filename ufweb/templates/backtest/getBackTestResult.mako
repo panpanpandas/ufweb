@@ -26,7 +26,7 @@
 	            <td>End Date - Value</td>
 	            <td>Sharpe Ratio</td>
 	            <td>Max Drawdown</td>
-	            <td>R Squired</td>
+	            <td>R Squared</td>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -37,7 +37,7 @@
 	            <td>${metrics['endTime']} - ${"%.1f" % metrics['endValue']}</td>
 	            <td>${"%.2f" % metrics['sharpeRatio']}</td>
 	            <td>${metrics['maxDrawDown'][0]} - ${"%.1f%%" % (metrics['maxDrawDown'][1] * 100)}</td>
-	            <td>${"%.1f" % metrics['rSquired']}</td>
+	            <td>${"%.1f" % metrics['rSquared']}</td>
 	        </tr>
 	    </tbody>
 	</table>
