@@ -20,7 +20,7 @@
 		<caption>Metrics</caption>
 	    <thead>
 	        <tr>
-	        	<td>Period</td>
+	            <td>Period</td>
 	            <td>Lowest Date - Value</td>
 	            <td>Higest Date - Value</td>
 	            <td>End Date - Value</td>
@@ -31,7 +31,7 @@
 	    </thead>
 	    <tbody>
 	        <tr>
-	        	<td>${metrics['startTime']} - ${metrics['endTime']}</td>
+	            <td>${metrics['startTime']} - ${metrics['endTime']}</td>
 	            <td>${metrics['minTimeValue'][0]} - ${"%.1f" % metrics['minTimeValue'][1]}</td>
 	            <td>${metrics['maxTimeValue'][0]} - ${"%.1f" % metrics['maxTimeValue'][1]}</td>
 	            <td>${metrics['endTime']} - ${"%.1f" % metrics['endValue']}</td>

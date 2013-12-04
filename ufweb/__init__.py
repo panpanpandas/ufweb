@@ -14,6 +14,7 @@ def main(global_config, **settings):
     sessionFactory = UnencryptedCookieSessionFactoryConfig('blueblackbugsblood')
     settings['mako.directories'] = [ 'ufweb:templates' ]
     config = Configurator(settings=settings, session_factory=sessionFactory)
+    config.include('pyramid_mako')
 
     # add routes
     config.add_route("activity", "/activities/{aid}")
