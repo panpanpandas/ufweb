@@ -112,12 +112,12 @@
 	            <td colspan="6"><table>
 		        % for order in json.loads(state['placedOrders']):
 					<tr>
-			            <td>${order['symbol']}</td>
-			            <td>${order['action']}</td>
-			            <td>${order['share']}</td>
-			            <td>${order['price']}</td>
-			            <td>${order['type']}</td>
-			            <td>${order['status']}</td>
+			            <td>${json.loads(order)['symbol']}</td>
+			            <td>${json.loads(order)['action']}</td>
+			            <td>${json.loads(order)['share']}</td>
+			            <td>${json.loads(order)['price']}</td>
+			            <td>${json.loads(order)['type']}</td>
+			            <td>${json.loads(order)['status']}</td>
 		            </tr>
 		        % endfor
 		        </table></td>
@@ -125,12 +125,12 @@
 		        <td colspan="6"><table>
 		        % for order in json.loads(state['updatedOrders']):
 					<tr>
-			            <td>${order['symbol']}</td>
-			            <td>${order['action']}</td>
-			            <td>${order['share']}</td>
-			            <td>${order['price']}</td>
-			            <td>${order['type']}</td>
-			            <td>${order['status']}</td>
+			            <td>${json.loads(order)['symbol']}</td>
+			            <td>${json.loads(order)['action']}</td>
+			            <td>${json.loads(order)['share']}</td>
+			            <td>${json.loads(order)['price']}</td>
+			            <td>${json.loads(order)['type']}</td>
+			            <td>${json.loads(order)['status']}</td>
 		            </tr>
 		        % endfor
 		        </table></td>

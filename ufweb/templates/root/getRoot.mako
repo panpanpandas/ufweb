@@ -34,7 +34,7 @@ function startBacktest(data) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(data),
 	    success: function(r) {
-		    window.location.replace("./backtest");
+		    window.location.replace("./backtest/results");
 	    }
 	});
 }

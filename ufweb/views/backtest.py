@@ -45,11 +45,6 @@ class BackTest(object):
                                 symbolLists = symbolLists)
         backTester.setup()
         backTester.runTests()
-        BackTest.metrics = backTester.getMetrics().values()[0]
-        BackTest.latestStates = backTester.getLatestStates()
-        BackTest.holdings = backTester.getHoldings()
-
-        BackTest.endTime = time.asctime()
 
 
     ###############################################################################
@@ -94,14 +89,14 @@ class BackTest(object):
             return {"status": "BackTest started."}
 
 
-    @view_config(route_name='backtest/results', request_method="GET",
+    @view_config(route_name='backtestResults', request_method="GET",
                  renderer='ufweb:templates/backtest/listBackTestResults.mako')
     def getBackTestResults(self):
         ''' get backtest results in json format '''
         return self.__getBackTestResultsJson()
 
 
-    @view_config(route_name='backtest/results.json', request_method="GET",
+    @view_config(route_name='backtestResults.json', request_method="GET",
                  renderer='json')
     def getBackTestResultsJosn(self):
         ''' get backtest results in json format '''
@@ -115,18 +110,22 @@ class BackTest(object):
             # filter name like EBAY__zscorePortfolio__19901010__20131010
             resultFileNames = filter(lambda x: len(x.split("__")) == 4,
                                      os.listdir(outputDirPath.split("sqlite:///")[1]))
-            return {"results": resultFileNames}
-        else:
-            return {"results": []}
+            ret = {"results": resultFileNames}
+            if BackTest.thread and BackTest.thread.is_alive():
+                ret["running"] = "One backTest is running from %s" % BackTest.startTime
 
-    @view_config(route_name='backtest', request_method="GET",
+            return ret
+        else:
+            return {"results": [], "running": ""}
+
+    @view_config(route_name='backtestResult', request_method="GET",
                  renderer='ufweb:templates/backtest/getBackTestResult.mako')
     def getBackTestResult(self):
         ''' get backtest status'''
         name = self.request.matchdict['name']
         return self.__getBackTestJson(name)
 
-    @view_config(route_name='backtest.json', request_method="GET", renderer='json')
+    @view_config(route_name='backtestResult.json', request_method="GET", renderer='json')
     def getBackTestJsonResult(self):
         ''' get backtest status'''
         name = self.request.matchdict['name']
