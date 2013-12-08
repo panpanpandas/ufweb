@@ -8,11 +8,12 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
+    'pyramid_mako',
     'pyramid_debugtoolbar',
     'waitress',
     'nose>=1.0',
     'mock==0.8.0',
-    'configparser',
+    'configparser'
     ]
 
 setup(name='ufweb',

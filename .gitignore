@@ -1,5 +1,4 @@
 FrontendService.egg-info
-.project
 .pydevproject
 *.pyc
 logs

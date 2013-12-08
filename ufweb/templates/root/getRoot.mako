@@ -10,7 +10,7 @@
 <button onclick="startCrawler({})">Start Crawler</button>
 </br>
 </br>
-<a href="./backtest">Backtest</a>
+<a href="./backtest/results">Backtest Result</a>
 </br>
 <button onclick="startBacktest({})">Start Backtest</button>
 <button onclick="start2007Backtest()">Start Backtest(2007-2009)</button>

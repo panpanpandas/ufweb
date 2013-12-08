@@ -7,10 +7,14 @@ from pyramid.view import view_config
 from ultrafinance.module.backTester import BackTester
 from ultrafinance.lib.util import string2EpochTime
 from ultrafinance.backTest.stateSaver.sqlSaver import listTableNames
-import time
+from ultrafinance.backTest.stateSaver.stateSaverFactory import StateSaverFactory
 
 from ultrafinance.ufConfig.pyConfig import PyConfig
 from ultrafinance.backTest.constant import *
+
+import os
+import time
+import json
 
 from threading import Thread
 import logging
@@ -30,6 +34,9 @@ class BackTest(object):
         self.params = request.params
         self.session = request.session
         self.settings = request.registry.settings
+        self.__config = PyConfig()
+        self.__config.setSource(self.settings["ultrafinance.config"])
+
 
     def __startBackTester(self, startTickDate, startTradeDate, endTradeDate, symbolLists):
         ''' start googleCrawler '''
@@ -48,7 +55,7 @@ class BackTest(object):
     ###############################################################################
     # controller functions
     @view_config(route_name='backtest', request_method="POST", renderer='json')
-    def PostBackTest(self):
+    def postBackTest(self):
         ''' start crawler '''
         if BackTest.thread and BackTest.thread.is_alive():
             return {"status": "BackTest is running from %s" % BackTest.startTime}
@@ -87,48 +94,87 @@ class BackTest(object):
             return {"status": "BackTest started."}
 
 
-    @view_config(route_name='backtest/tables', request_method="GET",
-                 renderer='json')
-    def GetBackTestTables(self):
-        ''' get backtest status'''
-        self.__config = PyConfig()
-        self.__config.setSource(self.settings["ultrafinance.config"])
+    @view_config(route_name='backtest/results', request_method="GET",
+                 renderer='ufweb:templates/backtest/listBackTestResults.mako')
+    def getBackTestResults(self):
+        ''' get backtest results in json format '''
+        return self.__getBackTestResultsJson()
 
-        outputDb = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB)
-        return listTableNames(outputDb)
+
+    @view_config(route_name='backtest/results.json', request_method="GET",
+                 renderer='json')
+    def getBackTestResultsJosn(self):
+        ''' get backtest results in json format '''
+        return self.__getBackTestResultsJson()
+
+
+    def __getBackTestResultsJson(self):
+        ''' get results in json '''
+        outputDirPath = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB_PREFIX)
+        if outputDirPath:
+            # filter name like EBAY__zscorePortfolio__19901010__20131010
+            resultFileNames = filter(lambda x: len(x.split("__")) == 4,
+                                     os.listdir(outputDirPath.split("sqlite:///")[1]))
+            return {"results": resultFileNames}
+        else:
+            return {"results": []}
 
     @view_config(route_name='backtest', request_method="GET",
                  renderer='ufweb:templates/backtest/getBackTestResult.mako')
-    def GetBackTestResult(self):
+    def getBackTestResult(self):
         ''' get backtest status'''
-        return self.__getBackTestJson()
+        name = self.request.matchdict['name']
+        return self.__getBackTestJson(name)
 
     @view_config(route_name='backtest.json', request_method="GET", renderer='json')
-    def GetBackTestJsonResult(self):
+    def getBackTestJsonResult(self):
         ''' get backtest status'''
-        return self.__getBackTestJson()
+        name = self.request.matchdict['name']
+        return self.__getBackTestJson(name)
 
-    def __getBackTestJson(self):
-        ''' get backtest json result '''
-        ret = {}
+    def __getBackTestJson(self, resultName):
+        ''' get one backtest result '''
+        symbolOrNum, strategyName, startDate, endDate = self.__parseTableName(resultName)
 
-        if BackTest.thread is None:
-            return ret
-        elif BackTest.thread and BackTest.thread.is_alive():
-            return {"startDate": BackTest.startTime}
+        saver = self.__getSaver(resultName)
+
+        latestStates = saver.getStates(0, None)
+
+        metrics = saver.getMetrics()
+        return {"symbolOrNum": symbolOrNum,
+                "strategyName": strategyName,
+                "startDate": startDate,
+                "endDate": endDate,
+                "metrics": metrics,
+                "latestStates": latestStates,
+                "timeAndPostionList": [[string2EpochTime(str(state['time'])) * 1000, float(state['account'])]
+                                       for state in latestStates] if latestStates else [],
+                "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue'])]
+                                       for state in latestStates] if BackTest.latestStates else [],
+                "timeAndBenchmarkList": [[string2EpochTime(str(state['time'])) * 1000, float(state['indexPrice'])]
+                                         for state in latestStates] if latestStates else [],
+                "holdings": metrics["endHoldings"]}
+
+    def __getSaver(self, tableName):
+        ''' get create it if not exist'''
+        saver = None
+        saverName = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_SAVER)
+        outputDb = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB_PREFIX) + tableName
+        if saverName > 0:
+            saver = StateSaverFactory.createStateSaver(saverName, {'db': outputDb})
+
+        return saver
+
+    def __getLatestStates(self, tableName):
+        ''' get latest state'''
+        return [json.loads(str(result)) for result in self.__getSaver(tableName).getStates(0, None)]
+
+    def __parseTableName(self, tableName):
+        ''' parse table name and return symbol, strategy, startDate, endDate '''
+        if tableName:
+            return tableName.split("__")
         else:
-            return {"startDate": BackTest.startTime,
-                    "endDate": BackTest.endTime,
-                    "metrics": BackTest.metrics,
-                    "latestStates": BackTest.latestStates,
-                    "timeAndPostionList": [[string2EpochTime(str(state['time'])) * 1000, float(state['account'])]
-                                           for state in BackTest.latestStates] if BackTest.latestStates else [],
-                    "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue'])]
-                                           for state in BackTest.latestStates] if BackTest.latestStates else [],
-                    "timeAndBenchmarkList": [[string2EpochTime(str(state['time'])) * 1000, float(state['indexPrice'])]
-                                             for state in BackTest.latestStates] if BackTest.latestStates else [],
-                    "holdings": self.__convertHoldingsToList(BackTest.holdings[0]) \
-                    if BackTest.holdings and len(BackTest.holdings) > 0 else {}}
+            return ["", "", "", ""]
 
     def __convertHoldingsToList(self, holding):
         ''' convert holding to dict'''

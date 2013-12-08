@@ -17,12 +17,11 @@ def main(global_config, **settings):
     config.include('pyramid_mako')
 
     # add routes
-    config.add_route("activity", "/activities/{aid}")
-    config.add_route("activities", "/activities")
     config.add_route("crawler", "/crawler")
-    config.add_route("backtest", "/backtest")
-    config.add_route("backtest/tables", "/backtest/tables")
-    config.add_route("backtest.json", "/backtest.json")
+    config.add_route("backtest", "/backtest/result/{name}")
+    config.add_route("backtest.json", "/backtest/result/{name}/json")
+    config.add_route("backtest/results", "/backtest/results")
+    config.add_route("backtest/results.json", "/backtest/results.json")
     config.add_route("/", "/")
 
     # scan packages for views

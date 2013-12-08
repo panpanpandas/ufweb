@@ -7,6 +7,9 @@
 </%def>
 
 
+<%import json%>
+
+
 
 <!-- body ----------------------------------------------------------- -->
 % if startDate is UNDEFINED:
@@ -21,9 +24,9 @@
 	    <thead>
 	        <tr>
 	            <td>Period</td>
-	            <td>Lowest Date - Value</td>
-	            <td>Higest Date - Value</td>
-	            <td>End Date - Value</td>
+	            <td>Lowest Value</td>
+	            <td>Higest Value</td>
+	            <td>End Value</td>
 	            <td>Sharpe Ratio</td>
 	            <td>Max Drawdown</td>
 	            <td>R Squared</td>
@@ -31,13 +34,13 @@
 	    </thead>
 	    <tbody>
 	        <tr>
-	            <td>${metrics['startTime']} - ${metrics['endTime']}</td>
-	            <td>${metrics['minTimeValue'][0]} - ${"%.1f" % metrics['minTimeValue'][1]}</td>
-	            <td>${metrics['maxTimeValue'][0]} - ${"%.1f" % metrics['maxTimeValue'][1]}</td>
-	            <td>${metrics['endTime']} - ${"%.1f" % metrics['endValue']}</td>
-	            <td>${"%.2f" % metrics['sharpeRatio']}</td>
-	            <td>${metrics['maxDrawDown'][0]} - ${"%.1f%%" % (metrics['maxDrawDown'][1] * 100)}</td>
-	            <td>${"%.1f" % metrics['rSquared']}</td>
+	            <td>${metrics['startDate']} - ${metrics['endDate']}</td>
+	            <td>${"%.1f" % float(metrics['lowestValue'])}</td>
+	            <td>${"%.1f" % float(metrics['highestValue'])}</td>
+	            <td>${"%.1f" % float(metrics['endValue'])}</td>
+	            <td>${"%.2f" % float(metrics['sharpeRatio'])}</td>
+	            <td>${"%.1f%%" % (float(metrics['maxDrawDown']) * 100)}</td>
+	            <td>${"%.1f" % float(metrics['rSquared'])}</td>
 	        </tr>
 	    </tbody>
 	</table>
@@ -107,7 +110,7 @@
 	            <td>${state['time']}</td>
 	            <td>${state['account']}</td>
 	            <td colspan="6"><table>
-		        % for order in state['placedOrders']:
+		        % for order in json.loads(state['placedOrders']):
 					<tr>
 			            <td>${order['symbol']}</td>
 			            <td>${order['action']}</td>
@@ -120,7 +123,7 @@
 		        </table></td>
 
 		        <td colspan="6"><table>
-		        % for order in state['updatedOrders']:
+		        % for order in json.loads(state['updatedOrders']):
 					<tr>
 			            <td>${order['symbol']}</td>
 			            <td>${order['action']}</td>
@@ -147,7 +150,7 @@
 	        </tr>
         </thead>
         <tbody>
-        	% for holding in holdings:
+        	% for holding in json.loads(metrics["endHoldings"]):
 		        <tr>
 		            <td>${holding['symbol']}</td>
 		            <td>${holding['share']}</td>
