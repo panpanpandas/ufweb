@@ -34,13 +34,11 @@ class BackTest(object):
         self.params = request.params
         self.session = request.session
         self.settings = request.registry.settings
-        self.__config = PyConfig()
-        self.__config.setSource(self.settings["ultrafinance.config"])
 
 
-    def __startBackTester(self, startTickDate, startTradeDate, endTradeDate, symbolLists):
+    def __startBackTester(self, configFile, startTickDate, startTradeDate, endTradeDate, symbolLists):
         ''' start googleCrawler '''
-        backTester = BackTester(configFile = self.settings["ultrafinance.config"], startTickDate = startTickDate,
+        backTester = BackTester(configFile = configFile, startTickDate = startTickDate,
                                 startTradeDate = startTradeDate, endTradeDate = endTradeDate, cash = 150000,
                                 symbolLists = symbolLists)
         backTester.setup()
@@ -55,6 +53,7 @@ class BackTest(object):
         if BackTest.thread and BackTest.thread.is_alive():
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
+            configFile = "zscorePortfolio.prod.ini"
             startTickDate = 20111005
             startTradeDate = 20131017
             endTradeDate = None
@@ -75,12 +74,19 @@ class BackTest(object):
             if "endTradeDate" in body and int(body["endTradeDate"]) > 0:
                 endTradeDate = int(body["endTradeDate"])
 
+            if "configFile" in body:
+                configFile = body["configFile"]
+
             if "symbols" in body:
                 symbols = body["symbols"].split()
 
             LOG.debug("Get backtest request: startTickDate %d, startTradeDate %d, endTradeDate %d" % (startTickDate, startTradeDate, endTradeDate if endTradeDate else -1))
             BackTest.thread = Thread(target = self.__startBackTester,
-                                     args=[startTickDate, startTradeDate, endTradeDate, [symbols] if symbols else None])
+                                     args=[self.settings["ultrafinance.config.path.prefix"] + configFile,
+                                           startTickDate,
+                                           startTradeDate,
+                                           endTradeDate,
+                                           [symbols] if symbols else None])
             BackTest.startTime = time.asctime()
             BackTest.endTime = None
 
@@ -105,7 +111,7 @@ class BackTest(object):
 
     def __getBackTestResultsJson(self):
         ''' get results in json '''
-        outputDirPath = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB_PREFIX)
+        outputDirPath = self.settings["backtest.output_db_prefix"]
         if outputDirPath:
             # filter name like EBAY__zscorePortfolio__19901010__20131010
             resultFileNames = filter(lambda x: len(x.split("__")) == 4,

@@ -27,4 +27,4 @@ class Root:
     @view_config(route_name='/', renderer='ufweb:templates/root/getRoot.mako')
     def getRootHtml(self):
         ''' get root html '''
-        return {}
+        return {"configs": self.settings["ultrafinance.config.names"].split(" ")}

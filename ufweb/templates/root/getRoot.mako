@@ -4,7 +4,7 @@
 <title>Ultra Finance</title>
 </%def>
 
-<h3>Ultra Finance</h3>
+<h2>Ultra Finance</h3>
 <a href="./crawler">Crawler</a>
 </br>
 <button onclick="startCrawler({})">Start Crawler</button>
@@ -12,17 +12,20 @@
 </br>
 <a href="./backtest/results">Backtest Result</a>
 </br>
-<button onclick="startBacktest({})">Start Backtest</button>
-<button onclick="start2007Backtest()">Start Backtest(2007-2009)</button>
-<button onclick="start2009Backtest()">Start Backtest(2009-2013)</button>
+% for configFile in configs:
+	<h4>Strategy ${configFile}</h4>
+	<button onclick="startBacktest('${configFile}')">Start Backtest</button>
+	<button onclick="start2007Backtest('${configFile}')">Start Backtest(2007-2009)</button>
+	<button onclick="start2009Backtest('${configFile}')">Start Backtest(2009-2013)</button>
+% endfor
 
 <script>
-function start2007Backtest() {
-	startBacktest({"startTickDate": 20060101, "startTradeDate": 20070901, "endTradeDate": 20090901});
+function start2007Backtest(configFile) {
+	startBacktest({"configFile": configFile, "startTickDate": 20060101, "startTradeDate": 20070901, "endTradeDate": 20090901});
 }
 
-function start2009Backtest() {
-	startBacktest({"startTickDate": 20080101, "startTradeDate": 20090901, "endTradeDate": 20131010});
+function start2009Backtest(configFile) {
+	startBacktest({"configFile": configFile, "startTickDate": 20080101, "startTradeDate": 20090901, "endTradeDate": 20131010});
 }
 
 
