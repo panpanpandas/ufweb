@@ -149,7 +149,7 @@ class BackTest(object):
                 "timeAndPostionList": [[string2EpochTime(str(state['time'])) * 1000, float(state['account'])]
                                        for state in latestStates] if latestStates else [],
                 "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue'])]
-                                       for state in latestStates] if BackTest.latestStates else [],
+                                       for state in latestStates] if latestStates else [],
                 "timeAndBenchmarkList": [[string2EpochTime(str(state['time'])) * 1000, float(state['indexPrice'])]
                                          for state in latestStates] if latestStates else [],
                 "holdings": metrics["endHoldings"]}
