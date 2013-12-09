@@ -14,7 +14,7 @@
 </br>
 % for configFile in configs:
 	<h4>Strategy ${configFile}</h4>
-	<button onclick="startBacktest('${configFile}')">Start Backtest</button>
+	<button onclick="startBacktest({'configFile': '${configFile}'})">Start Backtest</button>
 	<button onclick="start2007Backtest('${configFile}')">Start Backtest(2007-2009)</button>
 	<button onclick="start2009Backtest('${configFile}')">Start Backtest(2009-2013)</button>
 % endfor

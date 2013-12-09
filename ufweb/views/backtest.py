@@ -6,10 +6,8 @@ Created on Aug 13, 2013
 from pyramid.view import view_config
 from ultrafinance.module.backTester import BackTester
 from ultrafinance.lib.util import string2EpochTime
-from ultrafinance.backTest.stateSaver.sqlSaver import listTableNames
 from ultrafinance.backTest.stateSaver.stateSaverFactory import StateSaverFactory
 
-from ultrafinance.ufConfig.pyConfig import PyConfig
 from ultrafinance.backTest.constant import *
 
 import os
@@ -19,7 +17,6 @@ import json
 from threading import Thread
 import logging
 LOG = logging.getLogger()
-
 
 class BackTest(object):
     thread = None
@@ -53,7 +50,7 @@ class BackTest(object):
         if BackTest.thread and BackTest.thread.is_alive():
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
-            configFile = "zscorePortfolio.prod.ini"
+            configFile = "zscorePortfolio.dev.ini"
             startTickDate = 20111005
             startTradeDate = 20131017
             endTradeDate = None
@@ -101,13 +98,11 @@ class BackTest(object):
         ''' get backtest results in json format '''
         return self.__getBackTestResultsJson()
 
-
     @view_config(route_name='backtestResults.json', request_method="GET",
                  renderer='json')
     def getBackTestResultsJosn(self):
         ''' get backtest results in json format '''
         return self.__getBackTestResultsJson()
-
 
     def __getBackTestResultsJson(self):
         ''' get results in json '''
@@ -139,10 +134,9 @@ class BackTest(object):
 
     def __getBackTestJson(self, resultName):
         ''' get one backtest result '''
-        symbolOrNum, strategyName, startDate, endDate = self.__parseTableName(resultName)
+        symbolOrNum, strategyName, startDate, endDate = self.__parseResultName(resultName)
 
         saver = self.__getSaver(resultName)
-
         latestStates = saver.getStates(0, None)
 
         metrics = saver.getMetrics()
@@ -162,22 +156,14 @@ class BackTest(object):
 
     def __getSaver(self, tableName):
         ''' get create it if not exist'''
-        saver = None
-        saverName = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_SAVER)
-        outputDb = self.__config.getOption(CONF_ULTRAFINANCE_SECTION, CONF_OUTPUT_DB_PREFIX) + tableName
-        if saverName > 0:
-            saver = StateSaverFactory.createStateSaver(saverName, {'db': outputDb})
-
+        outputDb = self.settings["backtest.output_db_prefix"] + tableName
+        saver = StateSaverFactory.createStateSaver("sql", {'db': outputDb})
         return saver
 
-    def __getLatestStates(self, tableName):
-        ''' get latest state'''
-        return [json.loads(str(result)) for result in self.__getSaver(tableName).getStates(0, None)]
-
-    def __parseTableName(self, tableName):
+    def __parseResultName(self, resultName):
         ''' parse table name and return symbol, strategy, startDate, endDate '''
-        if tableName:
-            return tableName.split("__")
+        if resultName:
+            return resultName.split("__")
         else:
             return ["", "", "", ""]
 
