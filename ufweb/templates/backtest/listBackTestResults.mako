@@ -3,6 +3,7 @@
 <%def name="head()">
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="/static/js/sorttable.js"></script>
 <title>UF Backtest</title>
 </%def>
 
@@ -13,7 +14,7 @@
 % if running:
 	<h4>${running}</h4>
 % endif
-<table>
+<table id="resultTable" class="sortable">
 	<caption>Available Backtest Results</caption>
 	<thead>
 		<tr>
@@ -37,3 +38,4 @@
 		% endfor
 	</tbody>
 </table>
+
