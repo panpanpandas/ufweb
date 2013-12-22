@@ -7,7 +7,7 @@
 	<meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/static/css/base.css"/>
     <link rel="stylesheet" media="screen" href="/static/css/bootstrap.min.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     ${next.head()}
 </head>
 <body>

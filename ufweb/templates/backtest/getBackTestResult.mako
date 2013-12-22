@@ -105,7 +105,7 @@
 	        </tr>
         </thead>
         <tbody>
-        	% for state in latestStates[-30:]:
+        	% for state in latestStates[-200:]:
 	            <tr>
 	            <td>${state['time']}</td>
 	            <td>${state['account']}</td>
