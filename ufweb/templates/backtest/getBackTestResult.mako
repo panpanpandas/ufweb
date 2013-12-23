@@ -45,7 +45,7 @@
 	    </tbody>
 	</table>
 
-	<div id="positionDiv" style="height: 500px; width: 50%"></div>
+	<div id="positionDiv" style="height: 650px; width: 50%"></div>
 	<script>
 	$('#positionDiv').highcharts('StockChart', {
 		rangeSelector : {
@@ -70,11 +70,18 @@
             height: 100,
             offset: 0,
             lineWidth: 2
+        }, {
+            title: {
+                text: 'Weekly Returns'
+            },
+            top: 450,
+            height: 100,
         }],
 
 		series : [{"name": "account", "compare": "percent", "data": ${timeAndPostionList}},
 		          {"name": "benchMark", "compare": "percent", "data": ${timeAndBenchmarkList}},
-				  {"name": "holdings", yAxis: 1, "data": ${timeAndHoldingList}}],
+				  {"name": "holdings", yAxis: 1, "data": ${timeAndHoldingList}},
+				  {"name": "weeklyReturn", yAxis: 2, "data": ${timeAndProfitList}, "type": "column"}],
 
 	});
 	</script>

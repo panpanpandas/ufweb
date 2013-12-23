@@ -148,11 +148,24 @@ class BackTest(object):
                 "latestStates": latestStates,
                 "timeAndPostionList": [[string2EpochTime(str(state['time'])) * 1000, float(state['account'])]
                                        for state in latestStates] if latestStates else [],
-                "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue'])]
+                "timeAndHoldingList": [[string2EpochTime(str(state['time'])) * 1000, float(state['holdingValue']) / float(state['account']) if float(state['account']) != 0 else 0]
                                        for state in latestStates] if latestStates else [],
+                "timeAndProfitList": self.__getTimeAndProfitList(latestStates),
                 "timeAndBenchmarkList": [[string2EpochTime(str(state['time'])) * 1000, float(state['indexPrice'])]
                                          for state in latestStates] if latestStates else [],
                 "holdings": metrics["endHoldings"]}
+
+    def __getTimeAndProfitList(self, latestStates):
+        ''' get time and profit list '''
+        timeAndProfitList = []
+        preState = None
+        if latestStates:
+            for state in latestStates[::5]:
+                if preState is not None:
+                    timeAndProfitList.append([string2EpochTime(str(state['time'])) * 1000, float(state['account']) - float(preState['account'])])
+                preState = state
+
+        return timeAndProfitList
 
     def __getSaver(self, tableName):
         ''' get create it if not exist'''
