@@ -51,8 +51,8 @@ class BackTest(object):
             return {"status": "BackTest is running from %s" % BackTest.startTime}
         else:
             configFile = "zscorePortfolio.dev.ini"
-            startTickDate = 20111005
-            startTradeDate = 20131017
+            startTickDate = 20121005
+            startTradeDate = 20131215
             endTradeDate = None
             symbols = None
 
