@@ -7,12 +7,12 @@ from ultrafinance.dam.DAMFactory import DAMFactory
 from ultrafinance.pyTaLib.indicator import mean, stddev
 
 symbols = []
-with open("/Users/ppa/workspace/ufweb/conf/crawler.dev.list", 'r') as f:
+with open("/Users/ppa/workspace/ufweb/conf/crawler.spy_nasdaq.list", 'r') as f:
     for line in f.readlines():
         symbols.append(line.strip())
 
 dam = DAMFactory.createDAM("sql", {'db': 'sqlite:////data/stock.sqlite'})
-dateTicks = dam.readBatchTupleQuotes(symbols, 20121010, None)
+dateTicks = dam.readBatchTupleQuotes(symbols, 20031210, 20131210)
 
 
 symbolTicks = {}
@@ -23,11 +23,9 @@ for timeStamp in sorted(dateTicks.iterkeys()):
 
         symbolTicks[symbol].append(tick)
 
-d = {}
+bads = []
+goods = {} # symbol as key, std as value
 for symbol, ticks in symbolTicks.iteritems():
-    if symbol in d:
-        continue
-
     avgClose = mean([tick.close for tick in ticks])
     std = 100 * stddev([tick.close for tick in ticks])/avgClose
     print "std for %s is %f" % (symbol, std)
@@ -35,24 +33,14 @@ for symbol, ticks in symbolTicks.iteritems():
     ticks = ticks[-30:]
     avgVolumnDollar = mean([tick.volume * tick.close for tick in ticks])
 
-    if avgVolumnDollar > 1000000 and avgClose > 8 and avgClose < 50 and std > 10:
-        d[symbol] = "good"
+    if avgVolumnDollar > 1000000 and avgClose > 6 and avgClose < 100:
+        goods[symbol] = std
     else:
-        d[symbol] = "bad"
+        bads.append(symbol)
 
-s = ""
-good = 0
-b = ""
-bad = 0
-for symbol, state in d.items():
-    if state == "good":
-        s += " %s" % symbol
-        good += 1
-    else:
-        b += " %s" % symbol
-        bad += 1
-print "====good %d====" % good
-print s
+print "=========bad %s==============" % len(bads)
+print bads
 
-print "====bad %d=====" % bad
-print b
+sortedList = sorted(goods.iteritems(), key=lambda x: x[1])
+print "=========good %s==============" % len(sortedList)
+print [symbolStd[0] for symbolStd in sortedList]
